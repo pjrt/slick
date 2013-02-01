@@ -89,7 +89,8 @@ trait JdbcInvokerComponent { driver: JdbcDriver =>
     /** Insert a single row. */
     def insert(value: U)(implicit session: Backend#Session): RetOne = prepared(insertStatement) { st =>
       st.clearParameters()
-      unpackable.linearizer.narrowedLinearizer.asInstanceOf[RecordLinearizer[U]].setParameter(driver, new PositionedParameters(st), Some(value))
+      converter.set(value, new PositionedParameters(st))
+      //unpackable.linearizer.narrowedLinearizer.asInstanceOf[RecordLinearizer[U]].setParameter(driver, new PositionedParameters(st), Some(value))
       val count = st.executeUpdate()
       retOne(st, value, count)
     }
@@ -105,7 +106,8 @@ trait JdbcInvokerComponent { driver: JdbcDriver =>
         prepared(insertStatement) { st =>
           st.clearParameters()
           for(value <- values) {
-            unpackable.linearizer.narrowedLinearizer.asInstanceOf[RecordLinearizer[U]].setParameter(driver, new PositionedParameters(st), Some(value))
+            converter.set(value, new PositionedParameters(st))
+            //unpackable.linearizer.narrowedLinearizer.asInstanceOf[RecordLinearizer[U]].setParameter(driver, new PositionedParameters(st), Some(value))
             st.addBatch()
           }
           var unknown = false

@@ -103,12 +103,18 @@ final class TypeMappingResultConverter(child: ResultConverter, toBase: Any => An
   def set(value: Any, pp: PositionedParameters) = child.set(toBase(value), pp)
 }
 
-/** A custom compiler for INSERT statements. We could reuse the standard
-  * phases with a minor modification instead, but this is much faster. */
+/** Create an Insert node for an insertable expression. We can run this
+  * directly after letDynamicEliminated which is much faster than applying all
+  * standard phases. */
 class CompileInsert(val driver: JdbcDriver) extends Phase with MappingCompiler {
   val name = "compileInsert"
 
   def apply(state: CompilerState) = state.map { tree =>
+
+    val (table2, mapping) = tree match {
+      case Bind(gen, t: TableNode, Pure(pr)) => (t, pr)
+    }
+
     val cols = new ArrayBuffer[Select]
     var table: TableNode = null
     def f(c: Any): Unit = c match {

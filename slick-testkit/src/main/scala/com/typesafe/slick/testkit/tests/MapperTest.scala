@@ -25,7 +25,7 @@ class MapperTest(val tdb: TestDB) extends TestkitTest {
     }
 
     Users.ddl.create
-    Users.baseProjection.insert("Homer", "Simpson")
+    //Users.baseProjection.insert("Homer", "Simpson")
     /* Using Users.forInsert so that we don't put a NULL value into the ID
      * column. H2 and SQLite allow this but PostgreSQL doesn't. */
     Users.forInsert.insertAll(

@@ -88,11 +88,24 @@ object QueryCompiler {
     Phase.hoistClientOps
   )
 
+  val insertPhases = Vector(
+    Phase.localizeRefs,
+    Phase.reconstructProducts,
+    Phase.bindInsert,
+    Phase.inline,
+    Phase.letDynamicEliminated,
+    Phase.assignUniqueSymbols,
+    Phase.expandTables
+  )
+
   /** The default compiler */
   val standard = new QueryCompiler(standardPhases)
 
   /** The default compiler with the additional conversion to relational trees */
   val relational = new QueryCompiler(standardPhases ++ relationalPhases)
+
+  /** The default compiler for inserting data */
+  val insert = new QueryCompiler(insertPhases)
 
   def apply(phases: Phase*) = new QueryCompiler(phases.toVector)
 }
@@ -130,6 +143,8 @@ object Phase {
   val fuseComprehensions = new FuseComprehensions
   val fixRowNumberOrdering = new FixRowNumberOrdering
   val hoistClientOps = new HoistClientOps
+
+  val bindInsert = new BindInsert
 }
 
 /** The current state of a compiler run, consisting of immutable state of

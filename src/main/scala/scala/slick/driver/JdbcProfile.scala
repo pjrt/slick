@@ -24,7 +24,7 @@ trait JdbcProfile extends SqlProfile with JdbcTableComponent
   lazy val selectStatementCompiler = compiler + new JdbcCodeGen[this.type](this)(_.buildSelect)
   lazy val updateStatementCompiler = compiler + new JdbcCodeGen[this.type](this)(_.buildUpdate)
   lazy val deleteStatementCompiler = compiler + new JdbcCodeGen[this.type](this)(_.buildDelete)
-  lazy val insertStatementCompiler = QueryCompiler(new CompileInsert(this))
+  lazy val insertStatementCompiler = QueryCompiler.insert + new CompileInsert(this)
 
   final def buildTableDDL(table: Table[_]): DDL = createTableDDLBuilder(table).buildDDL
   final def buildSequenceDDL(seq: Sequence[_]): DDL = createSequenceDDLBuilder(seq).buildDDL
