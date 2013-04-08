@@ -30,6 +30,8 @@ trait RelationalProfile extends BasicProfile with RelationalTableComponent
     type Table[T] = driver.Table[T]
     type Sequence[T] = driver.Sequence[T]
     val Sequence = driver.Sequence
+    type ColumnType[T] = driver.ColumnType[T]
+    type BaseColumnType[T] = driver.BaseColumnType[T]
   }
 }
 
@@ -167,6 +169,7 @@ trait RelationalTypesComponent { driver: BasicDriver =>
 
   trait ImplicitColumnTypes {
     implicit def booleanColumnType: BaseColumnType[Boolean]
+    implicit def bigDecimalColumnType: BaseColumnType[BigDecimal] with NumericTypedType
     implicit def byteColumnType: BaseColumnType[Byte] with NumericTypedType
     implicit def charColumnType: BaseColumnType[Char]
     implicit def doubleColumnType: BaseColumnType[Double] with NumericTypedType
